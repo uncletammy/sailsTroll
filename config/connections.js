@@ -52,8 +52,8 @@ module.exports.connections = {
   //
  someMongodbServer: {
     adapter   : 'sails-mongo',
-    database : 'E4sonabe'
-    // url: local.mongo.url
+    // database : 'E4sonabe'
+    url: local.mongo.url
   },
 
   // PostgreSQL is another officially supported relational database.
