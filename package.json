@@ -26,7 +26,8 @@
     "natural": "~0.1.27",
     "async": "~0.9.0",
     "waterline": "git://github.com/balderdashy/waterline.git",
-    "sails-userhooks-ircbot": "git://github.com/uncletammy/sails-userhooks-ircbot.git"
+    "sails-userhooks-ircbot": "git://github.com/uncletammy/sails-userhooks-ircbot.git",
+    "lodash": "~2.4.1"
   },
   "scripts": {
     "start": "node app.js",
@@ -35,13 +36,13 @@
   "main": "app.js",
   "repository": {
     "type": "git",
-    "url": "git://github.com/dude/aggregator.git"
+    "url": "git://github.com/uncletammy/sailsTroll.git"
   },
-  "author": "dude",
+  "author": "Nicholas Crumrine",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/dude/aggregator/issues"
+    "url": "https://github.com/uncletammy/sailsTroll/issues"
   },
-  "homepage": "https://github.com/dude/aggregator",
+  "homepage": "https://github.com/uncletammy/sailsTroll",
   "devDependencies": {}
 }
