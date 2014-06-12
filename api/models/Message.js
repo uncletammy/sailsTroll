@@ -50,7 +50,8 @@ module.exports = {
       // Check to see if this is an old message being migrated.
       // If so, make sure the createdAt date reflects when the 
       // message was originally created. 
-// console.log('looking for',values)
+      if (values.channel.toLowerCase() === '#sailsjs')
+          values.channel = '5398d161bc9477dd23c6ae5e';
 
       if (values.channel !== '5398d161bc9477dd23c6ae5e'){
       //   Channel.findOne({name:values.channel}).exec(function(err,gotChannel){
@@ -60,6 +61,7 @@ module.exports = {
         // console.log('unknown channel:',values)
       } else {
 
+        // for migrating old data
         if (values.date){
           // console.log('Message is old')
           values.createdAt = new Date(values.date);
@@ -69,7 +71,6 @@ module.exports = {
         var lcnick = values.sender.toLowerCase().replace(/[\W_]/ig,'');
         values.sender = lcnick;
         // console.log('Trying User create!')
-        // values.channel = gotChannel.id;
         callback()
         User.create({nick:originalNick,lcnick:lcnick}).exec(function(err,done){
             if (err) return console.log('Error Creating/finding user:',sender);
@@ -77,48 +78,52 @@ module.exports = {
         })
         
       }
-// 5398d161bc9477dd23c6ae5e
 
   },
   afterCreate: function(values,exitAfterCreate){
       var emergencyTimeout = function(){
           var messageValues = values;
           var exitCB = exitAfterCreate;
-          console.log('There was an error when trying to save message:',messageValues.id);
+          console.log('There was a problem when trying to save message:',messageValues.id);
           console.log('We are returning as if its business as usual\n\n',messageValues,'\n\n');
           return exitCB();
       }
 
       Message.currentTimeout = setTimeout(emergencyTimeout,1000*60)
 
-      console.log('STARTING NEW MESSAGE:',values.id,'\n');
-  Message.counter++;
-  if ((Message.counter/50).toString().indexOf('.')<0){
 
-    var rightNow = new Date();
-    var lastTime = Message.lastTime;
-    var subtractDates = Number((lastTime-rightNow))*(-1/1000);
-    console.log(Message.counter,'of 50772 - ',subtractDates,'second block');
-    Message.lastTime = rightNow;
-  }
+      // More migration stuff.  Ignore
+      console.log('STARTING NEW MESSAGE:',values.id,'\n');
+      Message.counter++;
+      if ((Message.counter/50).toString().indexOf('.')<0){
+        var rightNow = new Date();
+        var lastTime = Message.lastTime;
+        var subtractDates = Number((lastTime-rightNow))*(-1/1000);
+        console.log(Message.counter,'of 50772 - ',subtractDates,'second block');
+        Message.lastTime = rightNow;
+      }
         // Match Links and save them  in Links model if they
         // dont already exist.  Either way, associate them
         // with this record.
+
+
         var doLinks = function(linksFound,message,cb){
 
             var linksToAssociate = [];
             var doneWithLinks = cb;
 
+    // TODO: when associating links with a user, if the user has already posted that link, the .save()
+    // will fail.  Also
             var createNewLinks = function(linksThatNeedCreation,newLinkCallback){
               // console.log('Attempting to create links:',linksThatNeedCreation)
-                Link.create(linksThatNeedCreation)/*.populate('postedin').populate('postedby')*/.exec(function(err,newLinks){
+                Link.create(linksThatNeedCreation).exec(function(err,newLinks){
                   if (err) console.log('There was an error creating new links:',err);
                   linksToAssociate = linksToAssociate.concat(newLinks);
                   return newLinkCallback();
                 })
             };
 
-            Link.find({ linktext : _.unique(linksFound)}).exec(function(err,allLinksInMessage){
+            Link.find({ linktext : _.unique(linksFound)}).populate('postedby').exec(function(err,allLinksInMessage){
                 if (err) return console.log('There was an error retrieving old links:',err);
 
                 var existingLinksReturned = allLinksInMessage;
@@ -238,8 +243,8 @@ module.exports = {
 
 
                     var gramsToAssociate = _.unique(preUpdateGramStorage);
-// console.log('All Grams to associate!',gramsToAssociate)
-                    gramsToAssociate.forEach(function(oneGram,index){
+
+                   gramsToAssociate.forEach(function(oneGram,index){
                         var thisMessageID = messageID;
                         var saveGramAssociation = function(e,s){
                             if (e) console.log('Couldnt save gram association for',oneGram.name,'with messageID',thisMessageID);
@@ -254,7 +259,6 @@ module.exports = {
                         oneGram.save(saveGramAssociation);
                     });
 
-                    // return cb(associationResults);
                 };
 
                 if (createTheseGrams.length){              
@@ -275,9 +279,9 @@ module.exports = {
 
         Message.findOne(values.id).exec(function afterMessageGrab(e,message){
 
-                // console.log('Just looked up message',message.id,'\n\n')
-
                 // Make n-grams to make message searches easy
+                // Remove punctuation from message text then split it up by word.
+                // Save words that match the name of a user as userMentions. 
                 var getMessageWords = message.text.toLowerCase().replace(/[^\w ]/ig,'').replace(/ {2,}/,'').split(' ');
                 var allMessageWords = _.unique(_.filter(getMessageWords,function(thisWord){
                     if (thisWord.length>1);// Is this smart?  Only time will tell.
@@ -316,8 +320,6 @@ module.exports = {
                                 })
                             })
                         } else if (linksFound.length){
-                          // console.log('No Users Mentioned. Adding links then exiting');
-                          // exitAfterCreate();
                           doLinks(linksFound,message,function(){
                              console.log('\n',' -- DONE WITH MESSAGE',message.id,'. Found Links','\n')
                               clearTimeout(Message.currentTimeout);
@@ -347,10 +349,3 @@ module.exports = {
   }
 
 };
-    // Remove punctuation from message text then split it up by word.
-    // Save words that match the name of a user as userMentions. 
-
-    // Compose nGrams from node-natural. Associate with this record
-    // those ngrams which arent already.
-
-// User.find().populate('messages').exec(function(e,u){var cound=0;u.forEach(function(u2,i){cound+=u2.messages.length;if(i===u.length-1)console.log('There are a total of',cound,'associated messages')})})
