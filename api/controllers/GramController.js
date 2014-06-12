@@ -1,0 +1,11 @@
+/**
+ * GramController
+ *
+ * @description :: Server-side logic for managing bots
+ * @help        :: See http://links.sailsjs.org/docs/controllers
+ */
+
+module.exports = {
+	
+};
+
