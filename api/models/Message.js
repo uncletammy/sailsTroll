@@ -10,7 +10,7 @@ var async = require('async');
 
 
 module.exports = {
-  // migrate:'drop',
+  // migrate:'alter',
   migrate:'safe',
   autoPK: true,
 	autoCreatedAt: false,
@@ -45,41 +45,45 @@ module.exports = {
   counter:0,
   currentTimeout:null,
   lastTime: new Date(),
-  beforeCreate: function (values, callback) {
+  doUserMentions: function(filteredMentions,message,mentionCallback){
+    //   var processMention = function(oneMention,index){
+    //       var thisMessage = message;
+    //       // console.log('message passed:',message)
+    //       // console.log('mentioning',oneMention,'in',thisMessage.id);
+    //       thisMessage.usermentions.add(oneMention);
+    //       if (index === filteredMentions.length-1){
+    //         // console.log('Done making final userMention association');
 
-      // Check to see if this is an old message being migrated.
-      // If so, make sure the createdAt date reflects when the 
-      // message was originally created. 
-      if (values.channel.toLowerCase() === '#sailsjs')
-          values.channel = '5398d161bc9477dd23c6ae5e';
+    //         thisMessage.save(function(e,msgSaveVals){
+    //           if (e) console.log('Error saving useMentions:',e);
+    //             // console.log('Saved message with associations!',msgSaveVals)
+    //             return mentionCallback();
+    //         })
+    //       }
+    //   };
 
-      if (values.channel !== '5398d161bc9477dd23c6ae5e'){
-      //   Channel.findOne({name:values.channel}).exec(function(err,gotChannel){
-      //       if (err) console.log('There is no channel called',values.channel);
-        
-      // })
-        // console.log('unknown channel:',values)
-      } else {
-
-        // for migrating old data
-        if (values.date){
-          // console.log('Message is old')
-          values.createdAt = new Date(values.date);
-          delete values.date;
-        }
-        var originalNick = values.sender;
-        var lcnick = values.sender.toLowerCase().replace(/[\W_]/ig,'');
-        values.sender = lcnick;
-        // console.log('Trying User create!')
-        callback()
-        User.create({nick:originalNick,lcnick:lcnick}).exec(function(err,done){
-            if (err) return console.log('Error Creating/finding user:',sender);
-            // console.log('user Create is done',done);
-        })
-        
-      }
-
+    // filteredMentions.forEach(processMention);
+  
   },
+  beforeCreate: function (values, callback) {
+      var lcnick = values.sender.toLowerCase().replace(/[\W_]/ig,'')
+      var nowExit = function(err,userVals){
+            if (err) {
+              console.log('Error Creating user!')
+              User.nameStore = _.without(User.nameStore,lcnick);
+            }
+            return callback();
+        };
+
+      var doesUserExist = (User.nameStore.indexOf(lcnick)>-1);
+      if (doesUserExist){
+        console.log(lcnick,'Exists!')
+        return callback()
+      } else {
+        User.nameStore.push(lcnick);
+        User.create({nick:values.sender,lcnick:lcnick}).exec(nowExit)
+      }
+  }/*,
   afterCreate: function(values,exitAfterCreate){
       var emergencyTimeout = function(){
           var messageValues = values;
@@ -347,5 +351,5 @@ module.exports = {
         })
 
   }
-
+*/
 };

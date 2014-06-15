@@ -8,16 +8,16 @@ var natural = require('natural');
 var async = require('async');
 
 module.exports = {
-	// migrate:'drop',
+	// migrate:'alter',
 	migrate:'safe',
-	autoPK: false,
+	autoPK: true,
 	autoCreatedAt: false,
 	autoUpdatedAt: false,
 	
 	attributes: {
 		name: {
 			type: 'STRING',
-			primaryKey: true,
+			// primaryKey: true,
 			unique: true
 		},
         inmessage: {
