@@ -29,11 +29,18 @@ module.exports.bootstrap = function(cb) {
 */			
 
   User.find().exec(function(e,allUsers){
-    if (e) return console.log('Error Pushing Existing Users to memory:',e);
-  for (user in allUsers)
-    User.nameStore.push(allUsers[user].lcnick)
+      if (e)
+          return console.log('Error Pushing Existing Users to memory:',e);
+      for (var user in allUsers)
+          User.nameStore.push(allUsers[user].lcnick)
+  });
   
+  Gram.find().exec(function(e,allGrams){
+      if (e)
+          return console.log('Error Pushing Existing Grams to memory store:',e);
+      for (var gram in allGrams)
+          Gram.memoryStore.push(allGrams[gram])
   })
-// User.destroy().exec(console.log);Gram.destroy().exec(console.log);Link.destroy().exec(console.log);Gram.destroy().exec(console.log);
+
   cb();
 };

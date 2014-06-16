@@ -8,16 +8,15 @@ var natural = require('natural');
 var async = require('async');
 
 module.exports = {
-	// migrate:'drop',
+	// migrate:'alter',
 	migrate:'safe',
-	autoPK: false,
+	autoPK: true,
 	autoCreatedAt: false,
 	autoUpdatedAt: false,
 	
 	attributes: {
 		name: {
 			type: 'STRING',
-			primaryKey: true,
 			unique: true
 		},
         inmessage: {
@@ -25,6 +24,6 @@ module.exports = {
             via: 'grams',
             dominant:true
         }
-	}
+	},
+	memoryStore:[]
 };
-

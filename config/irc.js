@@ -1,6 +1,17 @@
 // var _ = require('lodash');
 
+// var onIRCJoin = function(from, to, message){
+
+// 	console.log('')
+
+// };
+
+
 var onIRCMessage = function(from, to, message){
+
+
+	// TODO: lookup both 'sender' and 'channel' on their in-memory stores
+	// and change the field before it is sent out.
 
 	var messageToSave = {
 		sender: from,

@@ -6,9 +6,9 @@
 */
 
 module.exports = {
-	// migrate:'drop',
+	// migrate:'alter',
 	migrate:'safe',
-	autoPK: false,
+	autoPK: true,
 	autoCreatedAt: true,
 	autoUpdatedAt: true,
 
@@ -24,14 +24,8 @@ module.exports = {
 			dominant:true
 		},
 		domain: 'STRING',
-		linktext: {
-			primaryKey:true,
+		text: {
 			type:'STRING'
 		}
 	}
 };
-
-// links:{
-// 	collection: 'link',
-// 	via: 'poster'
-// }
