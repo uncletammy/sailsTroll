@@ -27,5 +27,6 @@ module.exports = {
 		text: {
 			type:'STRING'
 		}
-	}
+	},
+	memoryStore: []
 };

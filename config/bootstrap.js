@@ -40,6 +40,13 @@ module.exports.bootstrap = function(cb) {
           return console.log('Error Pushing Existing Grams to memory store:',e);
       for (var gram in allGrams)
           Gram.memoryStore.push(allGrams[gram])
+  });
+
+ Link.find().exec(function(e,allLinks){
+      if (e)
+          return console.log('Error Pushing Existing Links to memory store:',e);
+      for (var link in allLinks)
+          Link.memoryStore.push(allLinks[link])
   })
 
   cb();
