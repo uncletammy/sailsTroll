@@ -13,26 +13,24 @@ module.exports.bootstrap = function(cb) {
 
   // It's very important to trigger this callack method when you are finished
   // with the bootstrap!  (otherwise your server will never lift, since it's waiting on the bootstrap)
-/*  sails.models.user.find().exec(function(e,users){
-  	if (e) return e;
-  	var showCollection = [];
-  	users.forEach(function(u,i){
-  		delete u.createdAt;
-  		delete u.updatedAt;
-  		showCollection.push(u);
-  		if (i === users.length-1){
-  			console.log(showCollection)
-  		}
-  	})
 
-  })
-*/			
+
+
+  // Maybe use .stream() for large collection so memory use isnt so high during lift?
+
 
   User.find().exec(function(e,allUsers){
       if (e)
           return console.log('Error Pushing Existing Users to memory:',e);
       for (var user in allUsers)
-          User.nameStore.push(allUsers[user].lcnick)
+          User.memoryStore.push(allUsers[user].lcnick)
+  });
+
+  Channel.find().exec(function(e,allChannels){
+      if (e)
+          return console.log('Error Pushing Existing Channels to memory:',e);
+      for (var channel in allChannels)
+          Channel.memoryStore.push(allChannels[channel])
   });
   
   Gram.find().exec(function(e,allGrams){
@@ -47,7 +45,9 @@ module.exports.bootstrap = function(cb) {
           return console.log('Error Pushing Existing Links to memory store:',e);
       for (var link in allLinks)
           Link.memoryStore.push(allLinks[link])
-  })
+  });
 
   cb();
+
+
 };

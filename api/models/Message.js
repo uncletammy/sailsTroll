@@ -68,7 +68,7 @@ module.exports = {
               allMentions.push(anObject);
       })
 
-      console.log('Attempting to associate:',allMentions);
+      console.log('Attempting to Associate userMentions:',allMentions);
 
       // message_usermentions__user_mentionedin.findOrCreateEach(longEnoughUserMentions).exec(saveResults);
 
@@ -108,6 +108,7 @@ module.exports = {
               };
               return anItem;
           });
+
           console.log('Doing Gram Associations for',mappedAssociations)
 
           // TODO: findOrCreateEach is not a thing.  Do finds.  Then do creates.
@@ -138,7 +139,7 @@ module.exports = {
 
       
       if (createTheseNewGrams.length){
-          console.log('About to create these new grams:',newGramsMapped);
+          console.log('About to create these new grams:',newGramsMapped,' and old grams with ids:',idsOfGramsToAssociate);
           // Gram.createEach(newGramsMapped).exec(createResults);
       } else if (justAssociate.length){
           doAssociationCreates();
@@ -150,9 +151,9 @@ module.exports = {
   },
   doLinks: function(messageID,messageSender,maybeCreate){
 
- /*       var existingLinks = _.pluck(Link.memoryStore,'linktext');
+        var existingLinks = _.pluck(Link.memoryStore,'linktext');
 
-        var mappedLinks = _.map(uniqueLinks,function(oneLink){
+        var mappedLinks = _.map(maybeCreate,function(oneLink){
             var indexOfLinkStart = oneLink.indexOf('://');
             // Chop off protocol and split at '/'
             var splitLinkPath = oneLink.split(/https{0,1}:\/\//i)[1].split('/');
@@ -165,46 +166,68 @@ module.exports = {
             var modifiedLink = {
                 linktext:oneLink,
                 domain:getLinkDomain
-            };      
+            };
             return modifiedLink
         });
 
-      var justAssociate = _.unique(_.intersection(existingGrams,maybeCreate));
+      var justAssociate = _.unique(_.intersection(existingLinks,maybeCreate));
 
       // Grab IDs of links that already exist.
-      _.each(justAssociate,function(oneGramName){
-          idsOfGramsToAssociate.push(_.find(Gram.memoryStore,{name:oneGramName}).id)
+      _.each(justAssociate,function(oneLinktext){
+          idsOfLinksToAssociate.push(_.find(Link.memoryStore,{linktext:oneLinktext}).id)
       })
 
-      var createTheseNewGrams = _.unique(_.difference(maybeCreate,existingGrams));
-*/
+      var createTheseNewLinks = _.unique(_.difference(maybeCreate,existingLinks));
+
+      console.log('Creating links:',createTheseNewLinks,'\n','and old links with id',justAssociate)
 
 
   },
   beforeCreate: function (values, callback) {
 
       var lcnick = values.sender.toLowerCase().replace(/[\W_]/ig,'')
+      var matchChannel = _.find(Channel.memoryStore,{name:values.channel});
+
       var nowExit = function(err,userVals){
             if (err) {
-              console.log('Error Creating user!')
-              User.nameStore = _.without(User.nameStore,lcnick);
+              User.memoryStore = _.without(User.memoryStore,lcnick);
+              return console.log('Error Creating user!');
             }
             values.sender = lcnick;
             return callback();
         };
 
-      // TODO: create Channel.idStore and have bootstrap load all the channels
-      // into it on lift.  Maybe switch to sails-memory in the future?
+      var validateUser = function(){
+          var doesUserExist = (User.memoryStore.indexOf(lcnick)>-1);
+          if (doesUserExist){
+            console.log(lcnick,'Exists!')
+            values.sender = lcnick;
+            return callback()
+          } else {
+            User.memoryStore.push(lcnick);
+            User.create({nick:values.sender,lcnick:lcnick}).exec(nowExit)
+          }
+      };
 
-      var doesUserExist = (User.nameStore.indexOf(lcnick)>-1);
-      if (doesUserExist){
-        console.log(lcnick,'Exists!')
-        values.sender = lcnick;
-        return callback()
+      var afterChannelCreate = function(err,channelVals){
+            if (err) {
+              console.log('Error Creating channel!');
+              return;
+            };
+            console.log('Channel',channelVals,'created!')
+            Channel.memoryStore.push(channelVals);
+            values.channel = channelVals.id;
+            return validateUser();
+        };
+
+      if (matchChannel){
+          values.channel = matchChannel.id;
+          console.log('Found channel',values.channel)
+          validateUser()
       } else {
-        User.nameStore.push(lcnick);
-        User.create({nick:values.sender,lcnick:lcnick}).exec(nowExit)
+          Channel.create({name:values.channel}).exec(afterChannelCreate)
       }
+      
   },
   afterCreate: function(values,exitAfterCreate){
 
@@ -243,10 +266,20 @@ module.exports = {
       if (maybeCreateLinks.length)
           Message.doLinks(oneMessage.id,oneMessage.sender,maybeCreateLinks);
 
-      var maybeCreateUserMentions = _.intersection(_.pluck(User.nameStore,'lcnick'),getMessageWords);
 
-      if (maybeCreateUserMentions.length)
+      var maybeCreateUserMentions = _.intersection(User.memoryStore,getMessageWords);
+
+      if (maybeCreateUserMentions.length){
+          console.log('Find users called',maybeCreateUserMentions,'among a list of',User.memoryStore.length)
           Message.doUserMentions(oneMessage.id,maybeCreateUserMentions);
+      } else {
+          console.log('Couldnt find users called',getMessageWords,'among a list of',User.memoryStore.length)
+      }
+
+      if (values.id){
+          console.log('Now Deleting message with id:',values.id)
+          Message.destroy(values.id).exec(console.log);
+      }
 
       return exitAfterCreate();
 

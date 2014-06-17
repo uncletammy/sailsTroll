@@ -22,6 +22,7 @@ module.exports = {
             via: 'channels',
             dominant:false
         }
-	}
+	},
+	memoryStore: []
 };
 

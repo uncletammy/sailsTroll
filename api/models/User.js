@@ -36,7 +36,7 @@ module.exports = {
     }
 
   },
-  nameStore:[],
+  memoryStore:[],
   // beforeCreate: function(vals,callback){
   //   if (User.nameStore.indexOf(vals.lcnick)>-1){
   //     console.log(vals.lcnick,'doesnt need to be created')
