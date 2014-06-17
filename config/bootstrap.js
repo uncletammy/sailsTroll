@@ -1,5 +1,5 @@
 
-
+var _ = require('lodash');
 /**
  * Bootstrap
  * (sails.config.bootstrap)
@@ -35,11 +35,19 @@ module.exports.bootstrap = function(cb) {
           Channel.memoryStore.push(allChannels[channel])
   });
   
+  // var s=require('stream').Writable();s._write=function(data,enc,cb){console.log(data.length);return cb()};
+  // Gram.stream({}).pipe(s);
+
   Gram.find().exec(function(e,allGrams){
       if (e)
           return console.log('Error Pushing Existing Grams to memory store:',e);
-      for (var gram in allGrams)
-          Gram.memoryStore.push(allGrams[gram])
+      // for (var gram in allGrams)
+      //     Gram.memoryStore.push(allGrams[gram])
+          _.each(allGrams,function(oneGram){
+              Gram.memoryStore[oneGram.name] = oneGram.id
+              return;            
+          })
+
   });
 
  Link.find().exec(function(e,allLinks){

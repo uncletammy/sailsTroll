@@ -24,7 +24,7 @@ module.exports = {
 			dominant:true
 		},
 		domain: 'STRING',
-		text: {
+		linktext: {
 			type:'STRING'
 		}
 	},
