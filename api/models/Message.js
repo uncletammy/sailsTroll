@@ -79,6 +79,9 @@ module.exports = {
       // the memory store.  For those that do exist, create new
       // entries in the join table.
 
+      // TODO: Add n-value attribute to grams in order to reduce search time.
+      // Also add source: "stack" so we can add other sources later. 
+
       var existingGrams = _.pluck(Gram.memoryStore,'name');
       var idsOfGramsToAssociate = [];
 
@@ -152,7 +155,7 @@ module.exports = {
   doLinks: function(messageID,messageSender,maybeCreate){
 
         var existingLinks = _.pluck(Link.memoryStore,'linktext');
-
+        var idsOfLinksToAssociate = [];
         var mappedLinks = _.map(maybeCreate,function(oneLink){
             var indexOfLinkStart = oneLink.indexOf('://');
             // Chop off protocol and split at '/'
@@ -179,7 +182,7 @@ module.exports = {
 
       var createTheseNewLinks = _.unique(_.difference(maybeCreate,existingLinks));
 
-      console.log('Creating links:',createTheseNewLinks,'\n','and old links with id',justAssociate)
+      console.log('Creating links:',createTheseNewLinks,'\n','and old links with id',idsOfLinksToAssociate)
 
 
   },
@@ -230,13 +233,20 @@ module.exports = {
       
   },
   afterCreate: function(values,exitAfterCreate){
+      var startTime = new Date();
 
+      var logTime = function(){
+        var endTime = new Date();
+        var totalTime = (endTime-startTime)/1000;
+        console.log('Message',values.id,'took',totalTime,'seconds to create');
+      }
       // Associations Needed
       //   message.grams - message:grams
       //   links.postedby - link:user (sender)
       //   message.links - message:links
       //   message.usermentions - message:user
-
+      console.log('entered afterCreate')
+      exitAfterCreate();
       var oneMessage = values;
       var NGrams = natural.NGrams;
 
@@ -267,10 +277,10 @@ module.exports = {
           Message.doLinks(oneMessage.id,oneMessage.sender,maybeCreateLinks);
 
 
-      var maybeCreateUserMentions = _.intersection(User.memoryStore,getMessageWords);
+      var maybeCreateUserMentions = _.intersection(User.memoryStore,allMessageWords);
 
       if (maybeCreateUserMentions.length){
-          console.log('Find users called',maybeCreateUserMentions,'among a list of',User.memoryStore.length)
+          console.log('Found users called',maybeCreateUserMentions,'among a list of',User.memoryStore.length)
           Message.doUserMentions(oneMessage.id,maybeCreateUserMentions);
       } else {
           console.log('Couldnt find users called',getMessageWords,'among a list of',User.memoryStore.length)
@@ -280,8 +290,8 @@ module.exports = {
           console.log('Now Deleting message with id:',values.id)
           Message.destroy(values.id).exec(console.log);
       }
-
-      return exitAfterCreate();
+      logTime();
+      // return exitAfterCreate();
 
   }
 
