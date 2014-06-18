@@ -6,6 +6,10 @@
  */
 
 module.exports = {
-	
+	index: function(req,res){
+
+		res.json('All params',req.allParams())
+
+	}
 };
 

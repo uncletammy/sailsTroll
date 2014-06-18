@@ -47,7 +47,8 @@ module.exports.bootstrap = function(cb) {
               Gram.memoryStore[oneGram.name] = oneGram.id
               return;            
           })
-
+          console.log('Finished loading stuff into memory.  sailsTroll connecting now...')
+          sails.hooks['sails-userhooks-ircbot'].bots.sailsTroll.connect();
   });
 
  Link.find().exec(function(e,allLinks){

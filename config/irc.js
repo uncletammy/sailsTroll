@@ -6,21 +6,49 @@
 
 // };
 
+var speakBot = function(sayToRoom,thingToSay){
+	console.log('sailsTroll has been commanded to say',thingToSay,'in room',sayToRoom)
+	sails.hooks['sails-userhooks-ircbot'].bots.sailsTroll.say(sayToRoom,thingToSay);
+};
+
 
 var onIRCMessage = function(from, to, message){
 
+	var getMessageWords = message.toLowerCase().replace(/[^\w ]/ig,'').replace(/ {2,}/,'').split(' ');
 
-	var messageToSave = {
-		sender: from,
-		channel: to,
-		text: message,
-		createdAt: new Date()
+
+	if (from.toLowerCase() !== 'sailstroll' && getMessageWords[0] !== 'sailstroll'){
+		var messageToSave = {
+			sender: from,
+			channel: to,
+			text: message,
+			createdAt: new Date()
+		}
+
+		Message.create(messageToSave).exec(function(e,m){
+			if (e) return console.log('Oh dear god, no!',e);
+			console.log('Create callback fired and',m.id,'saved')
+		})
 	}
 
-	Message.create(messageToSave).exec(function(e,m){
-		if (e) return console.log('Oh dear god, no!',e);
-		console.log('Create callback fired and',m.id,'saved')
-	})
+	if (getMessageWords[0] === 'sailstroll' && getMessageWords[1] === 'search'){
+
+		var speakURLResults = function(err,urlOfResults){
+			if (err){
+				return speakBot(to,'Sorry'+from+'. me got big error:'+err);
+			}
+
+			return speakBot(to,from+', try this: '+'http://sailstroll-20102.onmodulus.net/search/results/'+urlOfResults);
+
+		}
+
+		getMessageWords.shift();
+		getMessageWords.shift();
+
+		Search.doSearch(getMessageWords.join(' '),speakURLResults,true)
+
+	}
+
 
 /*
 	var theMessage = message.toLowerCase().replace(/[:,!]/g,' ');

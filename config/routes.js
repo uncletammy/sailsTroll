@@ -30,7 +30,7 @@ module.exports.routes = {
   '/': {
     view: 'homepage'
   },
-
+  '/search/results/:searchid': 'SearchController.renderResults'
 
   // Custom routes here...
 

@@ -42,6 +42,35 @@ module.exports = {
     },
     createdAt: 'DATE'
   },
+  getGramsFromWordArray: function(allMessageWords,isSearch){
+      // If the search controller is calling this function,
+      // leave out single word grams to improve relevance
+      // and speed.  This should eventually return single word
+      // grams if grams.inmessage <= n where n is the largest number
+      // of results whereby a search term can be deemed useful  
+
+      var NGrams = natural.NGrams;
+
+      if (isSearch){
+          var unoGrams = [];
+      } else {
+        
+          var unoGrams = NGrams.ngrams(allMessageWords, 1);
+      }
+
+      var biGrams = NGrams.bigrams(allMessageWords);
+      var triGrams = NGrams.trigrams(allMessageWords);
+
+      var processTheseGrams = biGrams.concat(unoGrams,triGrams);
+
+      var maybeCreateGrams = _.map(processTheseGrams,function(oneGramArray){
+          var joinedValue = oneGramArray.join('');
+          if (joinedValue.length > 0){
+            return joinedValue
+          }
+      });
+      return maybeCreateGrams
+  },
   doUserMentions: function(messageID,maybeCreate){
 
       var longEnoughUserMentions = _.filter(maybeCreate,function(oneUser){
@@ -99,10 +128,10 @@ module.exports = {
       _.each(maybeCreate,function(thisGram){
           var getGram = Gram.memoryStore[thisGram];
           if (getGram){
-              console.log('Found gram:',thisGram,':',getGram)
+              // console.log('Found gram:',thisGram,':',getGram)
               justAssociate.push(getGram)
           } else {
-              console.log('Couldnt find:',thisGram)              
+              // console.log('Couldnt find:',thisGram)              
               createTheseNewGrams.push(thisGram)
           }
 
@@ -114,7 +143,7 @@ module.exports = {
               console.log('Error Associating Grams',err,'\n\n');
               return err
           }
-          console.log('Gram Associations Created:',_.pluck(results,'id'))
+          console.log(results.length,'Gram Associations Created:')
           return true
       };
 
@@ -127,7 +156,7 @@ module.exports = {
               return anItem;
           });
 
-          console.log('Doing Gram Associations for',mappedAssociations.length)
+          // console.log('Doing Gram Associations for',mappedAssociations.length)
 
           gram_inmessage__message_grams.createEach(mappedAssociations).exec(resultsOfAssociationCreates)
       };
@@ -149,7 +178,7 @@ module.exports = {
           // var idsOfGramsToAssociate = idsOfGramsToAssociate.concat(_.pluck(results,'id'));
 
           if (justAssociate.length){
-            console.log('Now making associations for',justAssociate.length,'grams')
+            // console.log('Now making associations for',justAssociate.length,'grams')
             return doAssociationCreates()
           }
       };
@@ -161,10 +190,10 @@ module.exports = {
           return anItem;
       });
 
-          idsOfGramsToAssociate = idsOfGramsToAssociate.concat(idsOfGramsToAssociate);
+      idsOfGramsToAssociate = idsOfGramsToAssociate.concat(justAssociate);
       
       if (newGramsMapped.length){
-          console.log('About to create',newGramsMapped.length);
+          console.log('About to create',newGramsMapped.length,'NEW grams');
           Gram.createEach(newGramsMapped).exec(createResults);
       } else if (justAssociate.length){
           console.log('Couldnt find new grams but found',justAssociate.length,'old ones.  Now associating.');
@@ -252,7 +281,7 @@ module.exports = {
             // Push newly created links onto memory store
             // _.each(results,Link.memoryStore.push);
             _.each(results,function(oneLink){
-                Link.memoryStore[oneLink.name] = oneLink.id;
+                Link.memoryStore[oneLink.linktext] = oneLink.id;
                 idsOfLinksToAssociate.push(oneLink.id);
                 return
             });
@@ -321,7 +350,7 @@ module.exports = {
       var validateUser = function(){
           var doesUserExist = (User.memoryStore.indexOf(lcnick)>-1);
           if (doesUserExist){
-            console.log(lcnick,'Exists!')
+            // console.log(lcnick,'Exists!')
             values.sender = lcnick;
             return callback()
           } else {
@@ -343,7 +372,7 @@ module.exports = {
 
       if (matchChannel){
           values.channel = matchChannel.id;
-          console.log('Found channel',values.channel)
+          // console.log('Found channel',values.channel)
           validateUser()
       } else {
           Channel.create({name:values.channel}).exec(afterChannelCreate)
@@ -363,29 +392,16 @@ module.exports = {
       //   links.postedby - link:user (sender)
       //   message.links - message:links
       //   message.usermentions - message:user
-      console.log('entered afterCreate')
-      exitAfterCreate();
+      // console.log('entered afterCreate')
       var oneMessage = values;
-      var NGrams = natural.NGrams;
-
       var getMessageWords = oneMessage.text.toLowerCase().replace(/[^\w ]/ig,'').replace(/ {2,}/,'').split(' ');
       var allMessageWords = _.unique(_.filter(getMessageWords,function(thisWord){
           if (thisWord.length>1);// Is this smart?  Only time will tell.
               return thisWord
       }));
 
-      var unoGrams = NGrams.ngrams(allMessageWords, 1);
-      var biGrams = NGrams.bigrams(allMessageWords);
-      var triGrams = NGrams.trigrams(allMessageWords);
 
-      var processTheseGrams = biGrams.concat(unoGrams,triGrams);
-
-      var maybeCreateGrams = _.map(processTheseGrams,function(oneGramArray){
-          var joinedValue = oneGramArray.join('');
-          if (joinedValue.length > 0){
-            return joinedValue
-          }
-      });
+      var maybeCreateGrams = Message.getGramsFromWordArray(allMessageWords);
 
       Message.doGrams(oneMessage.id,maybeCreateGrams);
 
@@ -404,6 +420,7 @@ module.exports = {
           console.log('Couldnt find users called',allMessageWords,'among a list of',User.memoryStore.length)
       }
 
+      exitAfterCreate();
       logTime();
 
       // if (values.id){
