@@ -1,4 +1,4 @@
-// var _ = require('lodash');
+var local = require('./local.js');
 
 // var onIRCJoin = function(from, to, message){
 
@@ -8,9 +8,13 @@
 
 var speakBot = function(sayToRoom,thingToSay){
 	console.log('sailsTroll has been commanded to say',thingToSay,'in room',sayToRoom)
-	sails.hooks['sails-userhooks-ircbot'].bots.sailsTroll.say(sayToRoom,thingToSay);
+	sails.hooks.irchook.bots.sailsTroll.say(sayToRoom,thingToSay);
 };
 
+
+var doLogin = function(){
+	sails.hooks.irchook.bots.sailsTroll.ctcp('NickServ','privmsg','identify '+local.irc.password);
+}
 
 var onIRCMessage = function(from, to, message){
 
@@ -94,7 +98,7 @@ module.exports.irc = {
 			// part:console.log,
 			message:onIRCMessage,
 			// say:console.log,
-			registered:console.log
+			registered:doLogin
 		}
 	} 
 };

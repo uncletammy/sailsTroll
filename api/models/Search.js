@@ -75,7 +75,11 @@ module.exports = {
 		// Gram.find(getGramIds).populate('inmessage').exec(grabMessagesNow);
 
 		// gram_inmessage__message_grams.find({"gram_inmessage":{or:getGramIds}}).exec(grabMessagesNow);
-		gram_inmessage__message_grams.find({"gram_inmessage":getGramIds}).exec(grabMessagesNow);
+		if (getGramIds.length){
+			gram_inmessage__message_grams.find({"gram_inmessage":getGramIds}).exec(grabMessagesNow);
+		} else {
+			return callback('caint find nothin!')
+		}
 	}
 };
 

@@ -48,7 +48,7 @@ module.exports.bootstrap = function(cb) {
               return;            
           })
           console.log('Finished loading stuff into memory.  sailsTroll connecting now...')
-          sails.hooks['sails-userhooks-ircbot'].bots.sailsTroll.connect();
+          sails.hooks.irchook.bots.sailsTroll.connect();
   });
 
  Link.find().exec(function(e,allLinks){
