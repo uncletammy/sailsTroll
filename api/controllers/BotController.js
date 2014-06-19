@@ -24,7 +24,7 @@ module.exports = {
 
 				console.log(speakToRoom);
 
-				sails.hooks.irchook.bots.sailsTroll.say('#totesTesting',speakToRoom)
+				sails.hooks.irchook.bots.sailsTroll.say('#sailsjs',speakToRoom)
 
 			} catch (nope){
 				console.log('Something went wrong',nope)
