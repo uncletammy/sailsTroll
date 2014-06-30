@@ -259,7 +259,7 @@ module.exports = {
                           kept.push(grabbedIt)
                     })
                 }
-                if (kept.length)
+                if (kept && kept.length)
                   link_postedby__user_links.create(kept).exec(associationsCreated);
             };
 
