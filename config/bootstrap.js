@@ -25,7 +25,9 @@ module.exports.bootstrap = function(cb) {
       if (e)
           return console.log('Error Pushing Existing Users to memory:',e);
       for (var user in allUsers)
-          User.memoryStore.push(allUsers[user].lcnick)
+          User.memoryStore.push(allUsers[user].lcnick);
+
+      sails.hooks.irchook.bots.sailsTroll.connect();
   });
 
   Channel.find().exec(function(e,allChannels){
@@ -38,18 +40,18 @@ module.exports.bootstrap = function(cb) {
   // var s=require('stream').Writable();s._write=function(data,enc,cb){console.log(data.length);return cb()};
   // Gram.stream({}).pipe(s);
 
-  Gram.find().exec(function(e,allGrams){
-      if (e)
-          return console.log('Error Pushing Existing Grams to memory store:',e);
-      // for (var gram in allGrams)
-      //     Gram.memoryStore.push(allGrams[gram])
-          _.each(allGrams,function(oneGram){
-              Gram.memoryStore[oneGram.name] = oneGram.id
-              return;            
-          })
-          console.log('Finished loading stuff into memory.  sailsTroll connecting now...')
-          sails.hooks.irchook.bots.sailsTroll.connect();
-  });
+  // Gram.find().exec(function(e,allGrams){
+  //     if (e)
+  //         return console.log('Error Pushing Existing Grams to memory store:',e);
+  //     // for (var gram in allGrams)
+  //     //     Gram.memoryStore.push(allGrams[gram])
+  //         _.each(allGrams,function(oneGram){
+  //             Gram.memoryStore[oneGram.name] = oneGram.id
+  //             return;            
+  //         })
+  //         console.log('Finished loading stuff into memory.  sailsTroll connecting now...')
+  //         
+  // });
 
  Link.find().exec(function(e,allLinks){
       if (e)

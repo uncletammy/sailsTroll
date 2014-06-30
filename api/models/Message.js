@@ -125,18 +125,6 @@ module.exports = {
       var justAssociate = [];
       var createTheseNewGrams = [];
 
-      _.each(maybeCreate,function(thisGram){
-          var getGram = Gram.memoryStore[thisGram];
-          if (getGram){
-              // console.log('Found gram:',thisGram,':',getGram)
-              justAssociate.push(getGram)
-          } else {
-              // console.log('Couldnt find:',thisGram)              
-              createTheseNewGrams.push(thisGram)
-          }
-
-      });
-
 
       var resultsOfAssociationCreates = function(err,results){
           if (err){
@@ -169,12 +157,12 @@ module.exports = {
           // Push newly created grams onto memory store
           // _.each(results,Gram.memoryStore.push);
           _.each(results,function(oneGram){
-              Gram.memoryStore[oneGram.name] = oneGram.id;
+              // Gram.memoryStore[oneGram.name] = oneGram.id;
               idsOfGramsToAssociate.push(oneGram.id);
               return
           });
 
-          console.log('Created New Grams:',_.pluck(results,'name'))
+          // console.log('Created New Grams:',_.pluck(results,'name'))
           // var idsOfGramsToAssociate = idsOfGramsToAssociate.concat(_.pluck(results,'id'));
 
           if (justAssociate.length){
@@ -183,25 +171,50 @@ module.exports = {
           }
       };
 
-      var newGramsMapped = _.map(createTheseNewGrams,function(oneGramName){
-          var anItem = {
-              "name" : oneGramName
-          };
-          return anItem;
-      });
+      var mapAndCreate = function(){
+          var newGramsMapped = _.map(createTheseNewGrams,function(oneGramName){
+              var anItem = {
+                  "name" : oneGramName
+              };
+              return anItem;
+          });
 
-      idsOfGramsToAssociate = idsOfGramsToAssociate.concat(justAssociate);
-      
-      if (newGramsMapped.length){
-          console.log('About to create',newGramsMapped.length,'NEW grams');
-          Gram.createEach(newGramsMapped).exec(createResults);
-      } else if (justAssociate.length){
-          console.log('Couldnt find new grams but found',justAssociate.length,'old ones.  Now associating.');
-          doAssociationCreates();
-      } else {
-        return console.log('There are no grams to create.  This should never be the case.')
-      }
+          idsOfGramsToAssociate = idsOfGramsToAssociate.concat(justAssociate);
+          
+          if (newGramsMapped.length){
+              console.log('About to create',newGramsMapped.length,'NEW grams');
+              Gram.createEach(newGramsMapped).exec(createResults);
+          } else if (justAssociate.length){
+              console.log('Couldnt find new grams but found',justAssociate.length,'old ones.  Now associating.');
+              doAssociationCreates();
+          } else {
+            return console.log('There are no grams to create.  This should never be the case.')
+          }
+      };
 
+
+      var findExistingGrams = function(err,gramsFound){
+          if (err){
+              console.log('Error Associating Grams',err,'\n\n');
+              return err
+          }
+
+          _.each(maybeCreate,function(thisGram){
+              var getGram = _.find(gramsFound,{name:thisGram});
+              if (getGram){
+                  // console.log('Found gram:',thisGram,':',getGram)
+                  justAssociate.push(getGram.name)
+              } else {
+                  // console.log('Couldnt find:',thisGram)              
+                  createTheseNewGrams.push(thisGram)
+              }
+          });
+
+          return mapAndCreate()
+
+      };
+      // console.log('Grams:',maybeCreate,'is array?',_.isArray(maybeCreate),typeof maybeCreate[0])
+      Gram.find({name:maybeCreate}).exec(findExistingGrams);
 
   },
   doLinks: function(messageID,messageSender,maybeCreate){
@@ -217,23 +230,37 @@ module.exports = {
                 if (err){
                     return console.log('There was an error creating your link associations:',err)
                 }
-                return console.log('You just created',newlyCreatedAssociations.length,'new associations');
+                return console.log('You just created',newlyCreatedAssociations.length,'new Link associations');
 
             };
 
-            var gotLinksByUser = function(err,alreadyPostedByUser){
+            var gotLinksByUser = function(err,linksPostedByUser){
                 if (err){
                     console.log('Error Getting Links by User:',err,'\n\n');
                     return
                 };
+                // console.log('Found these:',linksPostedByUser);
+                if (linksPostedByUser.length){
+                  var big = _.pluck(links_postedBy,'link_postedby');
+                  var small = _.pluck(linksPostedByUser,'link_postedby');
+                  // console.log('big:',big.length)
+                  // console.log('small:',small.length)
 
-                if (alreadyPostedByUser.length){
-                    var returnedWithoutIDs = _.map(alreadyPostedByUser,function(o){delete o.id; return o});
-                    console.log(messageSender,'already posted',returnedWithoutIDs.length,'of the',links_postedBy.length,'links');
-                    links_postedBy = _.without(links_postedBy,returnedWithoutIDs);                  
+                    var keepThese =_.difference(big,small);
+
+                    // console.log('keepThese:',keepThese.length)
+
+                    var kept = [];
+
+                    _.each(keepThese,function(f){
+                      var grabbedIt = _.find(links_postedBy,{link_postedby:f});
+                      // console.log('keeping',f,':',grabbedIt);
+                          // console.log('keeping',f)
+                          kept.push(grabbedIt)
+                    })
                 }
-                console.log('Associating user',messageSender,'with this message');
-                link_postedby__user_links.create(links_postedBy).exec(associationsCreated);
+                if (kept.length)
+                  link_postedby__user_links.create(kept).exec(associationsCreated);
             };
 
             _.each(idsOfLinksToAssociate,function(oneLinkID){
@@ -254,7 +281,7 @@ module.exports = {
 
             if (justAssociate.length){
                 console.log('Since',messageSender,'is posting links that already exist, we much check to see that they havnt already posted them')
-                console.log('postedIn:',links_postedIn);
+                console.log('postedBy:',links_postedBy);
                 link_postedby__user_links.find({or:links_postedBy}).exec(gotLinksByUser)
                 console.log('Associating links with this message');
                 link_postedin__message_links.create(links_postedIn).exec(associationsCreated);
@@ -281,7 +308,8 @@ module.exports = {
             // Push newly created links onto memory store
             // _.each(results,Link.memoryStore.push);
             _.each(results,function(oneLink){
-                Link.memoryStore[oneLink.linktext] = oneLink.id;
+                console.log('Added link:',oneLink,'to memory store');
+                Link.memoryStore[oneLink.linktext] = oneLink;
                 idsOfLinksToAssociate.push(oneLink.id);
                 return
             });
@@ -321,6 +349,8 @@ module.exports = {
       var createTheseNewLinks = mapTheseLinks(_.unique(_.difference(maybeCreate,existingLinks)));
 
       console.log('Creating links:',createTheseNewLinks,'\n','and old links with id',idsOfLinksToAssociate)
+
+
 
       if (createTheseNewLinks.length){
           console.log('About to create',createTheseNewLinks.length,'new links',createTheseNewLinks);
