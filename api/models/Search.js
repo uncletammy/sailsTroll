@@ -43,8 +43,8 @@ module.exports = {
 			return callback(null,gramsFound);
 
 		};
-
-		Gram.find({or:maybeCreateGrams}).populate('inmessage').exec(getGramsThatExist);
+		console.log('DOING FIND NOW!!!')
+		Gram.find({name:maybeCreateGrams}).populate('inmessage').exec(getGramsThatExist);
 
 
 		// _.each(maybeCreateGrams,function(thisGram){
