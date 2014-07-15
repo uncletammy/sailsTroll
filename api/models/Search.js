@@ -29,7 +29,6 @@ module.exports = {
 
 
 		var getGramsThatExist = function(err,gramsFound){
-			console.log(arguments);
 			if (err) return callback(err);
 
 			console.log('Search Results:');
@@ -46,7 +45,7 @@ module.exports = {
 		console.log('DOING FIND NOW!!!')
 		Gram.find({name:maybeCreateGrams}).populate('inmessage').exec(getGramsThatExist);
 
-
+/*
 		// _.each(maybeCreateGrams,function(thisGram){
 		// 	var getGram = Gram.memoryStore[thisGram];
 		// 	if (getGram){
@@ -102,6 +101,6 @@ module.exports = {
 		} else {
 			return callback('caint find nothin!')
 		}
-	}
+*/	}
 };
 
