@@ -21,7 +21,7 @@ module.exports = {
 			if (thisWord.length>1);// Is this smart?  Only time will tell.
 				return thisWord
 		}));
-
+		console.log('Now getting grams for',allMessageWords.length)
 		// create ngrams but omit single word grams (for now)
 		var maybeCreateGrams = Message.getGramsFromWordArray(allMessageWords,true);
 

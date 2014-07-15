@@ -49,6 +49,8 @@ module.exports = {
       // grams if grams.inmessage <= n where n is the largest number
       // of results whereby a search term can be deemed useful  
 
+console.log('Now getting grams for',allMessageWords);
+
       var NGrams = natural.NGrams;
 
       if (isSearch){
@@ -353,7 +355,7 @@ module.exports = {
 
 
       if (createTheseNewLinks.length){
-          console.log('About to create',createTheseNewLinks.length,'new links',createTheseNewLinks);
+          // console.log('About to create',createTheseNewLinks.length,'new links',createTheseNewLinks);
           Link.createEach(createTheseNewLinks).exec(createResults);
       } else if (justAssociate.length){
           console.log('No New Links.  About to do associations for',idsOfLinksToAssociate.length,'old ones')
@@ -447,7 +449,7 @@ module.exports = {
           console.log('Found users called',maybeCreateUserMentions,'among a list of',User.memoryStore.length)
           Message.doUserMentions(oneMessage.id,maybeCreateUserMentions);
       } else {
-          console.log('Couldnt find users called',allMessageWords,'among a list of',User.memoryStore.length)
+          // console.log('Couldnt find users called',allMessageWords,'among a list of',User.memoryStore.length)
       }
 
       exitAfterCreate();
