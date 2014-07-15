@@ -49,7 +49,6 @@ module.exports = {
       // grams if grams.inmessage <= n where n is the largest number
       // of results whereby a search term can be deemed useful  
 
-console.log('Now getting grams for',allMessageWords);
 
       var NGrams = natural.NGrams;
 
@@ -65,12 +64,16 @@ console.log('Now getting grams for',allMessageWords);
 
       var processTheseGrams = biGrams.concat(unoGrams,triGrams);
 
+      
+console.log('Grams Made to search for',processTheseGrams);
+
       var maybeCreateGrams = _.map(processTheseGrams,function(oneGramArray){
           var joinedValue = oneGramArray.join('');
           if (joinedValue.length > 0){
             return joinedValue
           }
       });
+      console.log('Grams after map:',maybeCreateGrams)
       return maybeCreateGrams
   },
   doUserMentions: function(messageID,maybeCreate){
