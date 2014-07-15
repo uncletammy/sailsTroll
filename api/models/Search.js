@@ -23,16 +23,35 @@ module.exports = {
 		// create ngrams but omit single word grams (for now)
 		var maybeCreateGrams = Message.getGramsFromWordArray(allMessageWords,true);
 
-		var getGramIds = [];
+		// var getGramIds = [];
 
-		_.each(maybeCreateGrams,function(thisGram){
-			var getGram = Gram.memoryStore[thisGram];
-			if (getGram){
-				getGramIds.push(getGram);
-			} else {
-				console.log('Couldnt find:',thisGram)
-			}
-		});
+
+		var getGramsThatExist = function(err,gramsFound){
+			if (err) return callback(err);
+
+			console.log('Search Results:');
+			_.each(gramsFound,function(oneGram){
+
+				console.log(oneGram.name,':',oneGram.inmessage.length,'results.');
+
+
+			});
+
+			return callback(null,gramsFound);
+
+		};
+
+		Gram.find({or:maybeCreateGrams}).populate('inmessage').exec(getGramsThatExist);
+
+
+		// _.each(maybeCreateGrams,function(thisGram){
+		// 	var getGram = Gram.memoryStore[thisGram];
+		// 	if (getGram){
+		// 		getGramIds.push(getGram);
+		// 	} else {
+		// 		console.log('Couldnt find:',thisGram)
+		// 	}
+		// });
 
 		var saveSearchResultsAsModel = function(err,savedResultsValues){
 			if (err){
