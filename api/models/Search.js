@@ -39,7 +39,7 @@ module.exports = {
 				return oneGramName.length
 			});
 
-			console.log('Gram Names In order of relevence:',sortedGrams)
+			console.log('Gram Names In order of relevence:',_.pluck(sortedGrams,'name'));
 
 			var ensureUniqueness = [];
 
