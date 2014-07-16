@@ -53,6 +53,7 @@ module.exports = {
 					if (ensureUniqueness.indexOf(oneResult.id) < 0){
 						ensureUniqueness.push(oneResult.id)
 						objectToReturn.results.push(oneResult)
+						console.log('Pushing Msg - ',oneResult.text,'to',oneResultsObject.name,'results')
 					} else {
 						console.log(oneResult.id,'has already been saved');
 					}
@@ -61,6 +62,7 @@ module.exports = {
 
 			})
 
+			console.log('\n\n','Returning This:',returnResults)
 
 			return callback(null,returnResults);
 
