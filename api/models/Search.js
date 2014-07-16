@@ -51,8 +51,8 @@ module.exports = {
 
 				_.each(oneResultsObject.inmessage,function(oneResult){
 					if (ensureUniqueness.id.indexOf(oneResult.id) < 0 && ensureUniqueness.text.indexOf(oneResult.id) < 0){
-						ensureUniqueness.push(oneResult.id)
-						ensureUniqueness.push(oneResult.text)
+						ensureUniqueness.id.push(oneResult.id)
+						ensureUniqueness.text.push(oneResult.text)
 						objectToReturn.results.push(oneResult)
 						console.log('Pushing Msg - ',oneResult.text,'to',oneResultsObject.name,'results')
 					} else {
