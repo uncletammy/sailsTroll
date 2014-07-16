@@ -50,7 +50,7 @@ module.exports = {
 				};
 
 				_.each(oneResultsObject.inmessage,function(oneResult){
-					if (ensureUniqueness.id.indexOf(oneResult.id) < 0 && ensureUniqueness.text.indexOf(oneResult.id) < 0){
+					if (ensureUniqueness.id.indexOf(oneResult.id) < 0 && ensureUniqueness.text.indexOf(oneResult.text) < 0){
 						ensureUniqueness.id.push(oneResult.id)
 						ensureUniqueness.text.push(oneResult.text)
 						objectToReturn.results.push(oneResult)
