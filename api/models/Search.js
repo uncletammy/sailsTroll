@@ -49,7 +49,7 @@ module.exports = {
 					results: []
 				};
 
-				_.each(oneResultsObject.inmessage,function(oneResults){
+				_.each(oneResultsObject.inmessage,function(oneResult){
 					if (ensureUniqueness.indexOf(oneResult.id) < 0){
 						ensureUniqueness.push(oneResult.id)
 						objectToReturn.results.push(oneResult)
