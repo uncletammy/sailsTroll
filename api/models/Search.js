@@ -33,21 +33,36 @@ module.exports = {
 
 			console.log('Search Results:');
 
-			var getGramNames = _.sortBy(_.pluck(gramsFound,'name'),function(oneGramName){
+			var sortedGrams = _.sortBy(gramsFound,function(oneGramObject){
+				var oneGramName = oneGramObject.name;
 				console.log(oneGramName,':',oneGramName.length)
-				return oneObject.inmessage.length
+				return oneGramName.length
 			});
 
-			console.log('Gram Names In order of relevence:',getGramNames)
+			console.log('Gram Names In order of relevence:',sortedGrams)
+
+			var ensureUniqueness = [];
+
+			var returnResults = _.map(sortedGrams,function(oneResultsObject){
+				var objectToReturn = {
+					name: oneResultsObject.name,
+					results: []
+				};
+
+				_.each(oneResultsObject.inmessage,function(oneResults){
+					if (ensureUniqueness.indexOf(oneResult.id) < 0){
+						ensureUniqueness.push(oneResult.id)
+						objectToReturn.results.push(oneResult)
+					} else {
+						console.log(oneResult.id,'has already been saved');
+					}
+				})
+				return objectToReturn
+
+			})
 
 
-			
-
-			var ensureNoRepeats = [];
-
-
-
-			return callback(null,gramsFound);
+			return callback(null,returnResults);
 
 		};
 
