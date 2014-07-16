@@ -41,7 +41,7 @@ module.exports = {
 
 			console.log('Gram Names In order of relevence:',_.pluck(sortedGrams,'name'));
 
-			var ensureUniqueness = [];
+			var ensureUniqueness = {id:[],text:[]};
 
 			var returnResults = _.map(sortedGrams.reverse(),function(oneResultsObject){
 				var objectToReturn = {
@@ -50,8 +50,9 @@ module.exports = {
 				};
 
 				_.each(oneResultsObject.inmessage,function(oneResult){
-					if (ensureUniqueness.indexOf(oneResult.id) < 0){
+					if (ensureUniqueness.id.indexOf(oneResult.id) < 0 && ensureUniqueness.text.indexOf(oneResult.id) < 0){
 						ensureUniqueness.push(oneResult.id)
+						ensureUniqueness.push(oneResult.text)
 						objectToReturn.results.push(oneResult)
 						console.log('Pushing Msg - ',oneResult.text,'to',oneResultsObject.name,'results')
 					} else {
