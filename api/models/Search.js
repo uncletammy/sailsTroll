@@ -43,7 +43,7 @@ module.exports = {
 
 			var ensureUniqueness = [];
 
-			var returnResults = _.map(sortedGrams,function(oneResultsObject){
+			var returnResults = _.map(sortedGrams.reverse(),function(oneResultsObject){
 				var objectToReturn = {
 					name: oneResultsObject.name,
 					results: []
