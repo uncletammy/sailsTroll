@@ -32,17 +32,25 @@ module.exports = {
 			if (err) return callback(err);
 
 			console.log('Search Results:');
-			_.each(gramsFound,function(oneGram){
 
-				console.log(oneGram.name,':',oneGram.inmessage.length,'results.');
-
-
+			var getGramNames = _.sortBy(_.pluck(gramsFound,'name'),function(oneGramName){
+				console.log(oneGramName,':',oneGramName.length)
+				return oneObject.inmessage.length
 			});
+
+			console.log('Gram Names In order of relevence:',getGramNames)
+
+
+			
+
+			var ensureNoRepeats = [];
+
+
 
 			return callback(null,gramsFound);
 
 		};
-		console.log('DOING FIND NOW!!!')
+
 		Gram.find({name:maybeCreateGrams}).populate('inmessage').exec(getGramsThatExist);
 
 /*

@@ -48,7 +48,6 @@ var onIRCMessage = function(from, to, message){
 
 		getMessageWords.shift();
 		getMessageWords.shift();
-console.log('THIS SHOULD NOT BE FIRING')
 		Search.doSearch(getMessageWords.join(' '),speakURLResults,true)
 
 	}
