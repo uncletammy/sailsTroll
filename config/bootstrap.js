@@ -60,6 +60,14 @@ module.exports.bootstrap = function(cb) {
           Link.memoryStore.push(allLinks[link])
   });
 
+ JunkWord.find().exec(function(e,allJunkWords){
+      if (e)
+          return console.log('Error Pushing Existing JunkWords to memory store:',e);
+      for (var word in allJunkWords)
+          JunkWord.memoryStore.push(allJunkWords[word].word)
+  });
+
+// JunkWord.memoryStore
   cb();
 
 

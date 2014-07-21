@@ -55,8 +55,10 @@ module.exports = {
       if (isSearch){
           var unoGrams = [];
       } else {
-        
-          var unoGrams = NGrams.ngrams(_.unique(allMessageWords), 1);
+          var unoGramsBeforeFilter = _.unique(allMessageWords);
+          var unoGramsAfterFilter = _.without(unoGramsBeforeFilter,JunkWord.memoryStore);
+          console.log('unoGramsBeforeFilter:',unoGramsBeforeFilter.length,'unoGramsAfterFilter:',unoGramsAfterFilter.length,'JunkWords:',JunkWord.memoryStore.length);
+          var unoGrams = NGrams.ngrams(unoGramsAfterFilter, 1);
       }
 
       var biGrams = NGrams.bigrams(allMessageWords);
