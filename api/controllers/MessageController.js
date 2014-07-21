@@ -19,7 +19,7 @@ module.exports = {
 			}
 
 			console.log('Got',transcriptBottom.length,'from bottom. Returning Results.');
-			console.log(transcriptBottom);
+			console.log(JSON.stringify(transcriptBottom));
 
 			// this should be a splice I tinks
 
@@ -38,7 +38,7 @@ module.exports = {
 
 			console.log('Got',transcriptTop.length,'from top. Getting bottom.');
 
-			console.log(transcriptTop);
+			console.log(JSON.stringify(transcriptTop));
 
 			transcript = transcript.concat(transcriptTop);
 
@@ -48,7 +48,7 @@ module.exports = {
 				}
 			}
 
-			Message.find(findCriteria).sort('createdAt ASC').limit(5).exec(returnTranscript)
+			Message.find(findCriteria).sort('createdAt ASC').limit(3).exec(returnTranscript)
 
 
 		};
@@ -61,7 +61,7 @@ module.exports = {
 				}
 			}
 
-			Message.find(findCriteria).sort('createdAt ASC').limit(5).exec(getTranscriptBottom)
+			Message.find(findCriteria).sort('createdAt ASC').limit(3).exec(getTranscriptBottom)
 
 
 		};
