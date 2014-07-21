@@ -62,7 +62,7 @@ module.exports = {
 		};
 
 
-
+		console.log('Trying to get transcript section for',messageCreatedAt);
 
 		return getTranscriptTop()
 	}
