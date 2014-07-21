@@ -48,7 +48,7 @@ module.exports = {
 				}
 			}
 
-			Message.find(findCriteria).sort('createdAt ASC').limit(20).exec(returnTranscript)
+			Message.find(findCriteria).sort('createdAt ASC').limit(5).exec(returnTranscript)
 
 
 		};
@@ -61,7 +61,7 @@ module.exports = {
 				}
 			}
 
-			Message.find(findCriteria).sort('createdAt ASC').limit(20).exec(getTranscriptBottom)
+			Message.find(findCriteria).sort('createdAt ASC').limit(5).exec(getTranscriptBottom)
 
 
 		};
