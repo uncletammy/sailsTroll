@@ -44,7 +44,7 @@ module.exports = {
 
 			var findCriteria = {
 				"createdAt": {
-					">": new Date(messageCreatedAt)
+					">=": new Date(messageCreatedAt)
 				}
 			}
 
@@ -57,11 +57,11 @@ module.exports = {
 
 			var findCriteria = {
 				"createdAt": {
-					"<=": new Date(messageCreatedAt)
+					"<": new Date(messageCreatedAt)
 				}
 			}
 
-			Message.find(findCriteria).sort('createdAt ASC').limit(3).exec(getTranscriptBottom)
+			Message.find(findCriteria).sort('createdAt DESC').limit(4).exec(getTranscriptBottom)
 
 
 		};
