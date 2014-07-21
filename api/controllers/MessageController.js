@@ -40,7 +40,7 @@ module.exports = {
 
 			console.log(JSON.stringify(transcriptTop));
 
-			transcript = transcript.concat(transcriptTop);
+			transcript = transcript.concat(transcriptTop.reverse());
 
 			var findCriteria = {
 				"createdAt": {
@@ -48,9 +48,7 @@ module.exports = {
 				}
 			}
 
-			Message.find(findCriteria).sort('createdAt ASC').limit(3).exec(returnTranscript)
-
-
+			Message.find(findCriteria).sort('createdAt ASC').limit(10).exec(returnTranscript)
 		};
 
 		var getTranscriptTop = function(messageID){
@@ -61,7 +59,7 @@ module.exports = {
 				}
 			}
 
-			Message.find(findCriteria).sort('createdAt DESC').limit(4).exec(getTranscriptBottom)
+			Message.find(findCriteria).sort('createdAt DESC').limit(10).exec(getTranscriptBottom)
 
 
 		};
