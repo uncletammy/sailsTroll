@@ -56,7 +56,7 @@ module.exports = {
           var unoGrams = [];
       } else {
           var unoGramsBeforeFilter = _.unique(allMessageWords);
-          var unoGramsAfterFilter = _.without(unoGramsBeforeFilter,JunkWord.memoryStore);
+          var unoGramsAfterFilter = _.difference(unoGramsBeforeFilter,JunkWord.memoryStore);
           console.log('unoGramsBeforeFilter:',unoGramsBeforeFilter.length,'unoGramsAfterFilter:',unoGramsAfterFilter.length,'JunkWords:',JunkWord.memoryStore.length);
           var unoGrams = NGrams.ngrams(unoGramsAfterFilter, 1);
       }
