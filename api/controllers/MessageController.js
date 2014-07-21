@@ -19,15 +19,29 @@ module.exports = {
 			}
 
 			console.log('Got',transcriptBottom.length,'from bottom. Returning Results.');
-			console.log(JSON.stringify(transcriptBottom));
+			// console.log(JSON.stringify(transcriptBottom));
 
 			// this should be a splice I tinks
 
 			transcript = transcript.concat(transcriptBottom);
-			console.log('\n\n','Whole Transcript (',transcript.length,' results):',transcript)
+			// console.log('\n\n','Whole Transcript (',transcript.length,' results):',transcript)
+
+			var ensureUniqueness = [];
+
+			var uniqueTranscript = [];
+
+			_.each(transcript,function(oneMessage){
+					var uniquenessKey = oneMessage.sender+oneMessage.text;
+					if (ensureUniqueness.indexOf(uniquenessKey) < 0){
+						uniqueTranscript.push(oneMessage);
+						ensureUniqueness.push(uniquenessKey);
+					} else {
+						console.log(uniquenessKey,'already found');
+					}
+			})
 
 			// This will be a problem when messages dont have unique createdAt Dates (bad data import)
-			return res.json({transcript: transcript,center:messageCreatedAt,type:"message"})
+			return res.json({transcript: uniqueTranscript,center:messageCreatedAt,type:"message"})
 
 		};
 
