@@ -62,7 +62,7 @@ module.exports = {
 				}
 			}
 
-			Message.find(findCriteria).sort('createdAt ASC').limit(10).exec(returnTranscript)
+			Message.find(findCriteria).sort('createdAt ASC').limit(20).exec(returnTranscript)
 		};
 
 		var getTranscriptTop = function(messageID){
@@ -73,9 +73,7 @@ module.exports = {
 				}
 			}
 
-			Message.find(findCriteria).sort('createdAt DESC').limit(10).exec(getTranscriptBottom)
-
-
+			Message.find(findCriteria).sort('createdAt DESC').limit(20).exec(getTranscriptBottom)
 		};
 
 
