@@ -8,7 +8,10 @@
 module.exports = {
 
 	attributes: {
-
+		word: {
+			type: 'STRING',
+			unique: true
+		}
 	},
 	afterCreate: function(values,callback){
 		JunkWord.memoryStore.push(values.word);
