@@ -21,7 +21,7 @@ module.exports = {
 			if (thisWord.length>1);// Is this smart?  Only time will tell.
 				return thisWord
 		}));
-		console.log('Now getting grams for',allMessageWords.length)
+		// console.log('Now getting grams for',allMessageWords.length)
 		// create ngrams but omit single word grams (for now)
 		var maybeCreateGrams = Message.getGramsFromWordArray(allMessageWords,true);
 
@@ -31,7 +31,7 @@ module.exports = {
 		var getGramsThatExist = function(err,gramsFound){
 			if (err) return callback(err);
 
-			console.log('Search Results:');
+			// console.log('Search Results:');
 
 			var sortedGrams = _.sortBy(gramsFound,function(oneGramObject){
 				var oneGramName = oneGramObject.name;
@@ -39,8 +39,9 @@ module.exports = {
 				return oneGramName.length
 			});
 
-			console.log('Gram Names In order of relevence:',_.pluck(sortedGrams,'name'));
+			// console.log('Gram Names In order of relevence:',_.pluck(sortedGrams,'name'));
 
+			// There are some dublicate entries in the dataset so we have to ensure uniqueness by both text and id.
 			var ensureUniqueness = {id:[],text:[]};
 
 			var returnResults = _.map(sortedGrams.reverse(),function(oneResultsObject){
@@ -54,16 +55,16 @@ module.exports = {
 						ensureUniqueness.id.push(oneResult.id)
 						ensureUniqueness.text.push(oneResult.text)
 						objectToReturn.results.push(oneResult)
-						console.log('Pushing Msg - ',oneResult.text,'to',oneResultsObject.name,'results')
+						// console.log('Pushing Msg - ',oneResult.text,'to',oneResultsObject.name,'results')
 					} else {
-						console.log(oneResult.id,'has already been saved');
+						// console.log(oneResult.id,'has already been saved');
 					}
 				})
 				return objectToReturn
 
 			})
 
-			console.log('\n\n','Returning This:',returnResults)
+			// console.log('\n\n','Returning This:',returnResults)
 
 			return callback(null,returnResults);
 
