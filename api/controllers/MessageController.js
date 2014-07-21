@@ -6,7 +6,7 @@
  */
 
 module.exports = {
-	getTranscript: function(req.res){
+	getTranscript: function(req,res){
 		var messageCreatedAt = req.param('message');
 
 		var transcript = [];
@@ -39,7 +39,7 @@ module.exports = {
 
 			var findCriteria = {
 				"createdAt": {
-					">" messageCreatedAt
+					">": messageCreatedAt
 				}
 			}
 
@@ -52,7 +52,7 @@ module.exports = {
 
 			var findCriteria = {
 				"createdAt": {
-					"<=" messageCreatedAt
+					"<=": messageCreatedAt
 				}
 			}
 
