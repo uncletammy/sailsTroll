@@ -65,7 +65,7 @@ module.exports = {
       var processTheseGrams = biGrams.concat(unoGrams,triGrams);
 
       
-console.log('Grams Made to search for',processTheseGrams);
+      // console.log('Grams Made to search for',processTheseGrams);
 
       var maybeCreateGrams = _.map(processTheseGrams,function(oneGramArray){
           var joinedValue = oneGramArray.join('');
@@ -73,7 +73,7 @@ console.log('Grams Made to search for',processTheseGrams);
             return joinedValue
           }
       });
-      console.log('Grams after map:',maybeCreateGrams)
+      // console.log('Grams after map:',maybeCreateGrams)
       return maybeCreateGrams
   },
   doUserMentions: function(messageID,maybeCreate){

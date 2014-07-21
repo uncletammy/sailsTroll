@@ -35,11 +35,13 @@ module.exports = {
 
 			console.log('Got',getTranscriptTop.length,'from top. Getting bottom.');
 
+			console.log(getTranscriptTop);
+
 			transcript = transcript.concat(transcriptTop);
 
 			var findCriteria = {
 				"createdAt": {
-					">": messageCreatedAt
+					">": new Date(messageCreatedAt)
 				}
 			}
 
@@ -52,7 +54,7 @@ module.exports = {
 
 			var findCriteria = {
 				"createdAt": {
-					"<=": messageCreatedAt
+					"<=": new Date(messageCreatedAt)
 				}
 			}
 

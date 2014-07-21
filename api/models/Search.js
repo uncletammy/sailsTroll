@@ -14,10 +14,10 @@ module.exports = {
 		results: 'JSON'
 	},
 	doSearch: function(searchString,callback,saveResultsAsModel){
-		console.log('Now searching for',searchString)
+		// console.log('Now searching for',searchString)
 		var getMessageWords = searchString.toLowerCase().replace(/[^\w ]/ig,'').replace(/ {2,}/,'').split(' ');
 		var allMessageWords = _.unique(_.filter(getMessageWords,function(thisWord){
-			console.log(thisWord,thisWord.length)
+			// console.log(thisWord,thisWord.length)
 			if (thisWord.length>1);// Is this smart?  Only time will tell.
 				return thisWord
 		}));
@@ -35,7 +35,7 @@ module.exports = {
 
 			var sortedGrams = _.sortBy(gramsFound,function(oneGramObject){
 				var oneGramName = oneGramObject.name;
-				console.log(oneGramName,':',oneGramName.length)
+				// console.log(oneGramName,':',oneGramName.length)
 				return oneGramName.length
 			});
 
