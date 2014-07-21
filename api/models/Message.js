@@ -56,13 +56,15 @@ module.exports = {
           var unoGrams = [];
       } else {
         
-          var unoGrams = NGrams.ngrams(allMessageWords, 1);
+          var unoGrams = NGrams.ngrams(_.unique(allMessageWords), 1);
       }
 
       var biGrams = NGrams.bigrams(allMessageWords);
       var triGrams = NGrams.trigrams(allMessageWords);
 
       var processTheseGrams = biGrams.concat(unoGrams,triGrams);
+
+     // var processTheseGrams = _.unique(biGrams).concat(unoGrams,_.unique(triGrams));
 
       
       // console.log('Grams Made to search for',processTheseGrams);
@@ -74,7 +76,8 @@ module.exports = {
           }
       });
       // console.log('Grams after map:',maybeCreateGrams)
-      return maybeCreateGrams
+      // return maybeCreateGrams
+      return _.unique(maybeCreateGrams)
   },
   doUserMentions: function(messageID,maybeCreate){
 

@@ -16,14 +16,16 @@ module.exports = {
 	doSearch: function(searchString,callback,saveResultsAsModel){
 		// console.log('Now searching for',searchString)
 		var getMessageWords = searchString.toLowerCase().replace(/[^\w ]/ig,'').replace(/ {2,}/,'').split(' ');
-		var allMessageWords = _.unique(_.filter(getMessageWords,function(thisWord){
-			// console.log(thisWord,thisWord.length)
-			if (thisWord.length>1);// Is this smart?  Only time will tell.
-				return thisWord
-		}));
+		// var allMessageWords = _.unique(_.filter(getMessageWords,function(thisWord){
+		// 	if (thisWord.length>1);// Is this smart?  Only time will tell.
+		// 		return thisWord
+		// }));
+
+		var allMessageWords = getMessageWords;
+
 		// console.log('Now getting grams for',allMessageWords.length)
 		// create ngrams but omit single word grams (for now)
-		var maybeCreateGrams = Message.getGramsFromWordArray(allMessageWords,true);
+		var maybeCreateGrams = Message.getGramsFromWordArray(allMessageWords,false);
 
 		// var getGramIds = [];
 
