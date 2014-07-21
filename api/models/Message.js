@@ -57,7 +57,7 @@ module.exports = {
       } else {
           var unoGramsBeforeFilter = _.unique(allMessageWords);
           var unoGramsAfterFilter = _.difference(unoGramsBeforeFilter,JunkWord.memoryStore);
-          console.log('unoGramsBeforeFilter:',unoGramsBeforeFilter.length,'unoGramsAfterFilter:',unoGramsAfterFilter.length,'JunkWords:',JunkWord.memoryStore.length);
+          console.log('removed',unoGramsBeforeFilter.length-unoGramsAfterFilter.length,'junk words');
           var unoGrams = NGrams.ngrams(unoGramsAfterFilter, 1);
       }
 
@@ -66,19 +66,13 @@ module.exports = {
 
       var processTheseGrams = biGrams.concat(unoGrams,triGrams);
 
-     // var processTheseGrams = _.unique(biGrams).concat(unoGrams,_.unique(triGrams));
-
-      
-      // console.log('Grams Made to search for',processTheseGrams);
-
       var maybeCreateGrams = _.map(processTheseGrams,function(oneGramArray){
           var joinedValue = oneGramArray.join('');
           if (joinedValue.length > 0){
             return joinedValue
           }
       });
-      // console.log('Grams after map:',maybeCreateGrams)
-      // return maybeCreateGrams
+
       return _.unique(maybeCreateGrams)
   },
   doUserMentions: function(messageID,maybeCreate){
