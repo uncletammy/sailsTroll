@@ -19,9 +19,12 @@ module.exports = {
 			}
 
 			console.log('Got',transcriptBottom.length,'from bottom. Returning Results.');
+			console.log(transcriptBottom);
 
 			// this should be a splice I tinks
+
 			transcript = transcript.concat(transcriptBottom);
+			console.log('\n\n','Whole Transcript (',transcript.length,' results):',transcript)
 
 			// This will be a problem when messages dont have unique createdAt Dates (bad data import)
 			return res.json({transcript: transcript,center:messageCreatedAt,type:"message"})
@@ -33,9 +36,9 @@ module.exports = {
 				console.log('Error getting transcript top:',err);
 			}
 
-			console.log('Got',getTranscriptTop.length,'from top. Getting bottom.');
+			console.log('Got',transcriptTop.length,'from top. Getting bottom.');
 
-			console.log(getTranscriptTop);
+			console.log(transcriptTop);
 
 			transcript = transcript.concat(transcriptTop);
 
