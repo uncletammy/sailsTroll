@@ -149,7 +149,7 @@ module.exports = {
               return anItem;
           });
 
-          // console.log('Doing Gram Associations for',mappedAssociations.length)
+          console.log('Doing Gram Associations for',mappedAssociations)
 
           gram_inmessage__message_grams.createEach(mappedAssociations).exec(resultsOfAssociationCreates)
       };
@@ -171,7 +171,7 @@ module.exports = {
           // var idsOfGramsToAssociate = idsOfGramsToAssociate.concat(_.pluck(results,'id'));
 
           if (justAssociate.length){
-            // console.log('Now making associations for',justAssociate.length,'grams')
+            console.log('Now making associations for',justAssociate.length,'grams')
             return doAssociationCreates()
           }
       };
