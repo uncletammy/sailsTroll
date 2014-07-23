@@ -208,7 +208,7 @@ module.exports = {
               var getGram = _.find(gramsFound,{name:thisGram});
               if (getGram){
                   // console.log('Found gram:',thisGram,':',getGram)
-                  justAssociate.push(getGram.name)
+                  justAssociate.push(getGram.id)
               } else {
                   // console.log('Couldnt find:',thisGram)              
                   createTheseNewGrams.push(thisGram)
