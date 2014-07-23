@@ -94,7 +94,7 @@ module.exports = {
 			return res.json(results)
 		}
 
-		Message.find(findCriteria).sort('createdAt DESC').limit(10).exec(returnRecent)
+		Message.find({}).limit(10).sort('createdAt DESC').exec(returnRecent)
 
 	}
 };
