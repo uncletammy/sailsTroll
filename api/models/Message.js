@@ -53,12 +53,13 @@ module.exports = {
       var NGrams = natural.NGrams;
 
       if (isSearch){
-          var unoGrams = [];
-      } else {
           var unoGramsBeforeFilter = _.unique(allMessageWords);
           var unoGramsAfterFilter = _.difference(unoGramsBeforeFilter,JunkWord.memoryStore);
           console.log('removed',unoGramsBeforeFilter.length-unoGramsAfterFilter.length,'junk words');
           var unoGrams = NGrams.ngrams(unoGramsAfterFilter, 1);
+      } else {
+          var unoGrams = NGrams.ngrams(_.unique(allMessageWords), 1);
+
       }
 
       var biGrams = NGrams.bigrams(allMessageWords);
