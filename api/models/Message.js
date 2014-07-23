@@ -102,7 +102,7 @@ module.exports = {
               allMentions.push(anObject);
       })
 
-      console.log('Attempting to Associate userMentions:',longEnoughUserMentions);
+      // console.log('Attempting to Associate userMentions:',longEnoughUserMentions);
 
       message_usermentions__user_mentionedin.createEach(allMentions).exec(saveResults);
 
@@ -149,7 +149,7 @@ module.exports = {
               return anItem;
           });
 
-          console.log('Doing Gram Associations for',mappedAssociations)
+          // console.log('Doing Gram Associations for',mappedAssociations)
 
           gram_inmessage__message_grams.createEach(mappedAssociations).exec(resultsOfAssociationCreates)
       };
@@ -187,10 +187,10 @@ module.exports = {
           idsOfGramsToAssociate = idsOfGramsToAssociate.concat(justAssociate);
           
           if (newGramsMapped.length){
-              console.log('About to create',newGramsMapped.length,'NEW grams');
+              // console.log('About to create',newGramsMapped.length,'NEW grams');
               Gram.createEach(newGramsMapped).exec(createResults);
           } else if (justAssociate.length){
-              console.log('Couldnt find new grams but found',justAssociate.length,'old ones.  Now associating.');
+              // console.log('Couldnt find new grams but found',justAssociate.length,'old ones.  Now associating.');
               doAssociationCreates();
           } else {
             return console.log('There are no grams to create.  This should never be the case.')

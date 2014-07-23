@@ -80,6 +80,22 @@ module.exports = {
 		console.log('Trying to get transcript section for',messageCreatedAt);
 
 		return getTranscriptTop()
+	},
+	recentMessages: function(req,res){
+		console.log('grabbing recent messages');
+
+		var returnRecent = function(err,results){
+			if (err){
+				console.log('Error getting recent chat messages')
+				return res.json('Error:'+err)
+			}
+
+			console.log('Got recent messages',JSON.stringify(results))
+			return res.json(results)
+		}
+
+		Message.find(findCriteria).sort('createdAt DESC').limit(10).exec(returnRecent)
+
 	}
 };
 
