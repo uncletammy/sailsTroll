@@ -41,7 +41,7 @@ module.exports = {
 			})
 
 			// This will be a problem when messages dont have unique createdAt Dates (bad data import)
-			return res.json({transcript: uniqueTranscript.reverse(),center:messageCreatedAt,type:"message"})
+			return res.json({transcript: uniqueTranscript,center:messageCreatedAt,type:"message"})
 
 		};
 
