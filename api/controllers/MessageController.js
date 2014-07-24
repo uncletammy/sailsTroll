@@ -62,7 +62,7 @@ module.exports = {
 				}
 			}
 
-			Message.find(findCriteria).sort('createdAt ASC').limit(20).exec(returnTranscript)
+			Message.find(findCriteria).sort('createdAt ASC').limit(20).populate('usermentions').exec(returnTranscript)
 		};
 
 		var getTranscriptTop = function(messageID){
@@ -73,7 +73,7 @@ module.exports = {
 				}
 			}
 
-			Message.find(findCriteria).sort('createdAt DESC').limit(20).exec(getTranscriptBottom)
+			Message.find(findCriteria).sort('createdAt DESC').limit(20).populate('usermentions').exec(getTranscriptBottom)
 		};
 
 
@@ -94,7 +94,7 @@ module.exports = {
 			return res.json(results)
 		}
 
-		Message.find({}).limit(10).sort('createdAt DESC').exec(returnRecent)
+		Message.find({}).limit(10).populate('usermentions').sort('createdAt DESC').exec(returnRecent)
 
 	}
 };
