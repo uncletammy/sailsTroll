@@ -61,6 +61,8 @@ module.exports = {
 						// console.log(oneResult.id,'has already been saved');
 					}
 				})
+				objectToReturn.results = objectToReturn.results.reverse()
+				// objectToReturn.numberOfResults = objectToReturn.results.length;
 				return objectToReturn
 
 			})
