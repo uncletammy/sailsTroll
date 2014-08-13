@@ -4,9 +4,10 @@
  * @description :: Server-side logic for managing bots
  * @help        :: See http://links.sailsjs.org/docs/controllers
  */
-var local = require('../../config/local.js');
 var crypto = require('crypto');
+var local = require('../../config/local.js');
 var sexySecret = local.irc.githubSecret;
+
 module.exports = {
 	report: function(req,res){
 
@@ -19,8 +20,8 @@ module.exports = {
 				var repoName = req.param('repository').name;
 				var branch = req.param('ref').split('/');
 				branch = branch.pop();
-
-				var speakToRoom = committer+' just pushed to the '+branch+' branch of '+repoName+': '+message
+				var commitUrl = commitInfo.url;
+				var speakToRoom = committer+' pushed to '+branch+' branch of '+repoName+': '+'"'+message+'".  See '+commitUrl;
 
 				console.log(speakToRoom);
 
